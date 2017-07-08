@@ -1,0 +1,14 @@
+server:
+  port: 9020
+
+zuul:
+  routes:
+    caculator:
+      serviceId: calculator
+      path: /calculator/**
+      stripPrefix: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:9000/eureka/
