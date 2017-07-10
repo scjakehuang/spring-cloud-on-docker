@@ -1,0 +1,20 @@
+FROM java:8-jdk
+
+ARG server_name
+ARG server_port
+ARG jar_path
+ARG eureka_url
+
+ENV SERVER_NAME=$server_name
+ENV SERVER_PORT=$server_port
+ENV JAR_PATH=$jar_path
+ENV EUREKA_URL=$eureka_url
+
+COPY ${JAR_PATH} /${SERVER_NAME}.jar
+ADD ./docker/calculator/calculator.sh /calculator.sh
+RUN bash -c 'touch /${SERVER_NAME}.jar'
+RUN bash -c 'echo ${JAR_PATH} ${SERVER_NAME} ${SERVER_PORT}'
+
+EXPOSE ${SERVER_PORT}
+# ENTRYPOINT ["java", "-jar", "/${SERVER_NAME}.jar"]
+ENTRYPOINT ["bash", "/calculator.sh"]

@@ -1,0 +1,33 @@
+version: "2"
+
+services:
+  registry:
+    hostname: registry-server
+    networks:
+      - inner
+    build:
+      context: .
+      dockerfile: ./docker/registry/Dockerfile.registry
+      args:
+        server_name: ${REGISTRY_SERVER_NAME}
+        server_port: ${REGISTRY_PORT}
+        jar_path: ${REGISTRY_JAR}
+
+  calculator:
+    hostname: caculator-server
+    networks:
+      - inner
+    links:
+      - registry:registry-server
+    build:
+      context: .
+      dockerfile: ./docker/calculator/Dockerfile.calculator
+      args:
+        server_name: ${CALCULATOR_SERER_NAME}
+        server_port: ${CALCULATOR_PORT}
+        jar_path: ${CALCULATOR_JAR}
+        eureka_url: registry-server:${REGISTRY_PORT}
+
+networks:
+  inner:
+    driver: bridge
