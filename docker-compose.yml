@@ -2,9 +2,8 @@ version: "2"
 
 services:
   registry:
-    hostname: registry-server
     networks:
-      - inner
+      - backend
     build:
       context: .
       dockerfile: ./docker/registry/Dockerfile.registry
@@ -12,11 +11,12 @@ services:
         server_name: ${REGISTRY_SERVER_NAME}
         server_port: ${REGISTRY_PORT}
         jar_path: ${REGISTRY_JAR}
+    ports:
+      - "8090:${REGISTRY_PORT}"
 
   calculator:
-    hostname: caculator-server
     networks:
-      - inner
+      - backend
     links:
       - registry:registry-server
     build:
@@ -28,6 +28,57 @@ services:
         jar_path: ${CALCULATOR_JAR}
         eureka_url: registry-server:${REGISTRY_PORT}
 
+  formula:
+    networks:
+      - backend
+    links:
+      - registry:registry-server
+    build:
+      context: .
+      dockerfile: ./docker/formula/Dockerfile.formula
+      args:
+        server_name: ${FORMULA_SERVER_NAME}
+        server_port: ${FORMULA_PORT}
+        jar_path: ${FORMULA_JAR}
+        eureka_url: registry-server:${REGISTRY_PORT}
+
+  cuboid:
+    networks:
+      - backend
+    links:
+      - registry:registry-server
+    build:
+      context: .
+      dockerfile: ./docker/cuboid/Dockerfile.cuboid
+      args:
+        server_name: ${CUBOID_SERVER_NAME}
+        server_port: ${CUBOID_PORT}
+        jar_path: ${CUBOID_JAR}
+        eureka_url: registry-server:${REGISTRY_PORT}
+
+  gateway:
+    networks:
+      - backend
+#      - frontend
+    links:
+      - registry:registry-server
+      - calculator:calculator
+      - formula:formula
+      - cuboid:cuboid
+    build:
+      context: .
+      dockerfile: ./docker/gateway/Dockerfile.gateway
+      args:
+        server_name: ${GATEWAY_SERVER_NAME}
+        server_port: ${GATEWAY_PORT}
+        jar_path: ${GATEWAY_JAR}
+        eureka_url: registry-server:${REGISTRY_PORT}
+    ports:
+      - "9090:${GATEWAY_PORT}"
+
 networks:
-  inner:
+  backend:
     driver: bridge
+
+#  frontend:
+#    driver: bridge

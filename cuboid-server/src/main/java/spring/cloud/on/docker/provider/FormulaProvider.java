@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Created by viki on 17-7-7.
  */
 
-@FeignClient(value = "formula-service", path = "/formula/math")
+@FeignClient(value = "formula", path = "/formula/math")
 public interface FormulaProvider {
     @RequestMapping(method = RequestMethod.GET, value = "pythagorean")
     Double pythagorean(@RequestParam(value = "opA", required = true) Double opA,

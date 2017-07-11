@@ -7,6 +7,14 @@ zuul:
       serviceId: calculator
       path: /calculator/**
       stripPrefix: true
+    formula:
+      serviceId: formula
+      path: /formula/**
+      stripPrefix: true
+    cuboid:
+      serviceId: cuboid
+      path: /cuboid/**
+      stripPrefix: true
 
 eureka:
   client:

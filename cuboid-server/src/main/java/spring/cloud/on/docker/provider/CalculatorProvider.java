@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Created by viki on 17-7-7.
  */
-@FeignClient(value = "calculator-service", path = "/calc/api")
+@FeignClient(value = "calculator", path = "/calc/api")
 public interface CalculatorProvider {
     @RequestMapping(method = RequestMethod.GET, value = "add")
     Double add(@RequestParam(value = "opA", required = true) Double opA,
